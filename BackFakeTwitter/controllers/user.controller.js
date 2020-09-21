@@ -104,8 +104,71 @@ async function findOneUserById(req, res){
 
 }
 
+
+async function updateUser(req, res){
+
+    //check if the body is empty
+    if(!req.body){
+        response.status(400).send(
+            {
+                message: "Request body is empty!!!!"
+            }
+        );
+        return;
+    }
+
+    try{
+
+        const {idUser} = req.params;
+
+        const userFound = await dbManager.User.findOne(
+            {
+                where : {
+                    idUser: idUser
+                }
+            }
+        );
+
+        const updateUser = {
+            newUsername: req.body.username,
+            newCreated_date: req.body.created_date
+        }
+
+        
+
+        userFound.username = updateUser.newUsername;
+        userFound.created_date = updateUser.newCreated_date;
+
+
+        await userFound.save();
+
+        
+
+        res.json(userFound);
+
+    }catch(error){
+        res.status(500).send(
+            {
+                message: "Error in server, update to user"
+            }
+        );
+    }
+
+}
+
 exports.createUser = createUser;
 
 exports.getAllUsers = getAllUsers;
 
 exports.findOneUserById = findOneUserById;
+
+exports.updateUser = updateUser;
+
+
+
+
+
+//exports.updateUser = updateUser;
+//exports.deleteUserByUsername = deleteUserByUsername;
+//exports.deleteAllUsers = deleteAllUsers;
+//exports.findAllUsersByCreatedDate = findAllUsersByCreatedDate;
