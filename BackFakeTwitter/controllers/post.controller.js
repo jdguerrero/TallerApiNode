@@ -2,7 +2,7 @@ const dbManager = require("../database/db.manager");
 
 
 /**
- * create a new user at db
+ * create a new post at db
  * @param {*} req 
  * @param {*} res 
  */
@@ -44,7 +44,36 @@ function createPost (req, res) {
     );
 } 
 
+/**
+ * get all post at db
+ * @param {*} req 
+ * @param {*} res 
+ */
+async function getAllPosts (req, res) {
+
+    try{
+
+        //select * from post
+        const posts = await dbManager.Post.findAll();
+        res.json(
+            {
+                data: posts
+            }
+        );
+
+    }catch(error){
+        res.status(500).send(
+            {
+                message: "Error in server, listing users"
+            }
+        );
+    }
+
+}
+
 
 
 exports.createPost = createPost;
+
+exports.getAllPosts = getAllPosts;
 
