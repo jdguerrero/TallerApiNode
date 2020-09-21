@@ -12,5 +12,7 @@ router.get('/', postController.getAllPosts);
 
 router.get('/:idPost', postController.findOnePostById);
 
+router.put('/:idPost', postController.updatePost);
+
 
 module.exports = router;

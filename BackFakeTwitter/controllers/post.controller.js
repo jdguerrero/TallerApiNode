@@ -73,9 +73,9 @@ async function getAllPosts (req, res) {
 
 
 /**
- * return the user identificated by id on request
- * @param {*} req id user
- * @param {*} res user information
+ * return the post identificated by id on request
+ * @param {*} req idPost
+ * @param {*} res post information
  */
 async function findOnePostById(req, res){
 
@@ -104,9 +104,69 @@ async function findOnePostById(req, res){
 
 
 
+/**
+ * update a post by idPost
+ * @param {*} req new data by post
+ * @param {*} res post update
+ */
+async function updatePost(req, res){
+
+    //check if the body is empty
+    if(!req.body){
+        response.status(400).send(
+            {
+                message: "Request body is empty!!!!"
+            }
+        );
+        return;
+    }
+
+    try{
+
+        const {idPost} = req.params;
+
+        const postFound = await dbManager.Post.findOne(
+            {
+                where : {
+                    idPost: idPost
+                }
+            }
+        );
+
+        const updatePost = {
+            message: req.body.message,
+            published_date: req.body.published_date
+        }
+
+        
+
+        postFound.message = updatePost.message;
+        postFound.published_date = updatePost.published_date;
+
+
+        await postFound.save();
+
+        
+
+        res.json(postFound);
+
+    }catch(error){
+        res.status(500).send(
+            {
+                message: "Error in server, update to user"
+            }
+        );
+    }
+
+}
+
+
+
 exports.createPost = createPost;
 
 exports.getAllPosts = getAllPosts;
 
 exports.findOnePostById = findOnePostById;
+
+exports.updatePost = updatePost;
 
