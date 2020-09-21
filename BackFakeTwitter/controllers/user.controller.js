@@ -105,6 +105,11 @@ async function findOneUserById(req, res){
 }
 
 
+/**
+ * update a user by idUser
+ * @param {*} req new data by user
+ * @param {*} res user update
+ */
 async function updateUser(req, res){
 
     //check if the body is empty
@@ -156,6 +161,52 @@ async function updateUser(req, res){
 
 }
 
+
+
+
+/**
+ * delete user by username
+ * @param {*} req username
+ * @param {*} res information message
+ */
+async function deleteUserByUsername(req, res){
+
+    try{
+
+        const {username} = req.params;
+
+        console.log(username);
+
+        const userFound = await dbManager.User.findOne(
+            {
+                where : {
+                    username: username
+                }
+            }
+        );
+
+        await userFound.destroy();
+
+        res.send(
+            {
+                message: "User deleted"
+            }
+        );
+
+    }catch(error){
+        res.status(500).send(
+            {
+                message: "Error in server, deleted to user"
+            }
+        );
+    }
+
+}
+
+
+
+
+
 exports.createUser = createUser;
 
 exports.getAllUsers = getAllUsers;
@@ -164,11 +215,9 @@ exports.findOneUserById = findOneUserById;
 
 exports.updateUser = updateUser;
 
+exports.deleteUserByUsername = deleteUserByUsername;
 
 
 
-
-//exports.updateUser = updateUser;
-//exports.deleteUserByUsername = deleteUserByUsername;
 //exports.deleteAllUsers = deleteAllUsers;
 //exports.findAllUsersByCreatedDate = findAllUsersByCreatedDate;

@@ -14,6 +14,8 @@ router.get('/:idUser', userController.findOneUserById);
 
 router.put('/:idUser', userController.updateUser);
 
+router.delete('/:username', userController.deleteUserByUsername);
+
 
 
 
