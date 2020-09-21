@@ -175,8 +175,6 @@ async function deleteUserByUsername(req, res){
 
         const {username} = req.params;
 
-        console.log(username);
-
         const userFound = await dbManager.User.findOne(
             {
                 where : {
@@ -205,6 +203,38 @@ async function deleteUserByUsername(req, res){
 
 
 
+/**
+ * Delete all users of database
+ * @param {*} res informative message
+ */
+async function deleteAllUsers(req, res){
+
+    try{
+        const users = await dbManager.User.findAll();
+
+        users.forEach(user => {
+            user.destroy()
+        });
+
+        res.send(
+            {
+                message: "All user deleted"
+            }
+        );
+
+    }catch(error){
+        res.status(500).send(
+            {
+                message: "Error in server, delete all users"
+            }
+        );
+    }
+
+   
+
+
+
+}
 
 
 exports.createUser = createUser;
@@ -219,5 +249,5 @@ exports.deleteUserByUsername = deleteUserByUsername;
 
 
 
-//exports.deleteAllUsers = deleteAllUsers;
+exports.deleteAllUsers = deleteAllUsers;
 //exports.findAllUsersByCreatedDate = findAllUsersByCreatedDate;
