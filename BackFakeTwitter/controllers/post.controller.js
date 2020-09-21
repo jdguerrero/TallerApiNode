@@ -200,6 +200,34 @@ async function deletePostByID(req, res){
 }
 
 
+/**
+ * Delete all posts of database
+ * @param {*} res informative message
+ */
+async function deleteAllPosts(req, res){
+
+    try{
+        const posts = await dbManager.Post.findAll();
+
+        posts.forEach(post => {
+            post.destroy()
+        });
+
+        res.send(
+            {
+                message: "All posts deleted"
+            }
+        );
+
+    }catch(error){
+        res.status(500).send(
+            {
+                message: "Error in server, delete all users"
+            }
+        );
+    }
+}
+
 
 exports.createPost = createPost;
 
@@ -210,4 +238,6 @@ exports.findOnePostById = findOnePostById;
 exports.updatePost = updatePost;
 
 exports.deletePostByID = deletePostByID;
+
+exports.deleteAllPosts = deleteAllPosts;
 
