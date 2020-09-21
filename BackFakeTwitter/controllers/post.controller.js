@@ -72,8 +72,41 @@ async function getAllPosts (req, res) {
 }
 
 
+/**
+ * return the user identificated by id on request
+ * @param {*} req id user
+ * @param {*} res user information
+ */
+async function findOnePostById(req, res){
+
+    try{
+
+        const {idPost} = req.params;
+
+        const postFound = await dbManager.Post.findOne(
+            {
+                where : {
+                    idPost: idPost
+                }
+            }
+        );
+        res.json(postFound);
+
+    }catch(error){
+        res.status(500).send(
+            {
+                message: "Error in server, find to user"
+            }
+        );
+    }
+
+}
+
+
 
 exports.createPost = createPost;
 
 exports.getAllPosts = getAllPosts;
+
+exports.findOnePostById = findOnePostById;
 
