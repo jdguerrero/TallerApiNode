@@ -18,5 +18,7 @@ router.delete('/:username', userController.deleteUserByUsername);
 
 router.delete ('/',userController.deleteAllUsers);
 
+router.get ('/:created_date',userController.findAllUsersByCreatedDate);
+
 
 module.exports = router;

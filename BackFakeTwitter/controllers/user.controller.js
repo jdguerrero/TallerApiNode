@@ -229,10 +229,37 @@ async function deleteAllUsers(req, res){
             }
         );
     }
+}
 
-   
+
+async function findAllUsersByCreatedDate(){
+
+    try{
+
+        const {created_date} = req.params;
+
+        const users = await dbManager.User.findAll(
+            {
+                where: {
+                    created_date: created_date
+                }
+            }
+        );
+        
+        res.json(
+            {
+                data: users
+            }
+        );
 
 
+    }catch(error){
+        res.status(500).send(
+            {
+                message: "Error in server, deleted to user"
+            }
+        );
+    }
 
 }
 
@@ -247,7 +274,6 @@ exports.updateUser = updateUser;
 
 exports.deleteUserByUsername = deleteUserByUsername;
 
-
-
 exports.deleteAllUsers = deleteAllUsers;
-//exports.findAllUsersByCreatedDate = findAllUsersByCreatedDate;
+
+exports.findAllUsersByCreatedDate = findAllUsersByCreatedDate;
