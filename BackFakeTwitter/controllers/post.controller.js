@@ -1,4 +1,5 @@
 const dbManager = require("../database/db.manager");
+const { deleteUserByUsername } = require("./user.controller");
 
 
 /**
@@ -161,6 +162,44 @@ async function updatePost(req, res){
 }
 
 
+/**
+ * delete post by idPost
+ * @param {*} req idPost
+ * @param {*} res information message
+ */
+async function deletePostByID(req, res){
+
+    try{
+
+        const {idPost} = req.params;
+
+        const postFound = await dbManager.Post.findOne(
+            {
+                where : {
+                    idPost: idPost
+                }
+            }
+        );
+
+        await postFound.destroy();
+
+        res.send(
+            {
+                message: "User deleted"
+            }
+        );
+
+    }catch(error){
+        res.status(500).send(
+            {
+                message: "Error in server, deleted to user"
+            }
+        );
+    }
+
+}
+
+
 
 exports.createPost = createPost;
 
@@ -169,4 +208,6 @@ exports.getAllPosts = getAllPosts;
 exports.findOnePostById = findOnePostById;
 
 exports.updatePost = updatePost;
+
+exports.deletePostByID = deletePostByID;
 
