@@ -10,13 +10,17 @@ router.post('/', userController.createUser);
 
 router.get('/', userController.getAllUsers);
 
-router.get('/:idUser', userController.findOneUserById);
+router.get('/findId/:idUser', userController.findOneUserById);
 
-router.put('/:idUser', userController.updateUser);
+router.get('/findUN/:username', userController.findOneUserByUsername);
 
-router.delete('/:username', userController.deleteUserByUsername);
+router.update('/', userController.updateUsername);
 
-router.delete ('/',userController.deleteAllUsers);
+router.delete('/deleteID/:idUser', userController.deleteUserById);
+
+router.delete('/deleteUN/:username', userController.deleteUserByUsername);
+
+router.delete ('/deleteAll',userController.deleteAllUsers);
 
 router.get ('/:created_date',userController.findAllUsersByCreatedDate);
 

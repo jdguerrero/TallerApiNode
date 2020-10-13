@@ -27,7 +27,8 @@ module.exports = (sequelize, Sequelize) => {
             },
         },
         {
-            tableName: "tweets"
+            tableName: "tweets",
+            timestamps: false
         }
     );
     return Tweet;

@@ -5,7 +5,7 @@ const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users.route');
-const postRouter = require('./routes/post.route');
+const postRouter = require('./routes/tweet.route');
 
 const app = express();
 
@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/post', postRouter);
+app.use('/tweets', postRouter);
 
 
 dbManager.sequelizeConnection.authenticate().then(

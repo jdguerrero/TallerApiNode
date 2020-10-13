@@ -1,9 +1,8 @@
 const dbManager = require("../database/db.manager");
-const { deleteUserByUsername } = require("./user.controller");
 
 
 /**
- * create a new post at db
+ * create a new tweet at db
  * @param {*} req 
  * @param {*} res 
  */

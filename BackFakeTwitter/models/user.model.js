@@ -17,7 +17,8 @@ module.exports = (sequelize, Sequelize) => {
            created_date: Sequelize.DATE,
         },
         {
-            tableName: "users"
+            tableName: "users",
+            timestamps: false
         }
     );
     return User;
