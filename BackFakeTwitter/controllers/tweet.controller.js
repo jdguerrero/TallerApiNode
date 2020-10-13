@@ -6,7 +6,7 @@ const dbManager = require("../database/db.manager");
  * @param {*} req 
  * @param {*} res 
  */
-function createTweet(req, res) {
+async function createTweet(req, res) {
 
     /**
      * validar request vacio
@@ -276,7 +276,6 @@ async function updateTextTweet (req, res){
         response.status(400).send({
             message: "Body vacio!!!"
         });
-        return;
     }else{
         /**
          * creacion objeto con datos de entrada

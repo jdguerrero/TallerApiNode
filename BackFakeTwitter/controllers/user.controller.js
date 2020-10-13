@@ -2,13 +2,14 @@ const { User } = require("../database/db.manager");
 const dbManager = require("../database/db.manager");
 
 
-
 /**
  * create a new user at db
  * @param {*} req 
  * @param {*} res 
  */
 function createUser(req, res) {
+
+
 
     /**
      * validar request vacio
@@ -19,7 +20,6 @@ function createUser(req, res) {
         });
         return;
     } else {
-
         /**
          * creacion objeto con datos de entrada
          */

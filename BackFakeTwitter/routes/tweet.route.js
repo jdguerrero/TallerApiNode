@@ -14,7 +14,7 @@ router.get('/findId/:idTweet', tweetController.findTweetById);
 
 router.get('/findUN/:username', tweetController.findAllTweetsByUsername);
 
-router.update('/', tweetController.updateTextTweet);
+router.put('/', tweetController.updateTextTweet);
 
 router.delete('/deleteID/:idTweet', tweetController.deleteTweetById);
 

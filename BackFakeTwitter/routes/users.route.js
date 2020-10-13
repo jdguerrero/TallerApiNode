@@ -13,15 +13,13 @@ router.get('/findId/:idUser', userController.findOneUserById);
 
 router.get('/findUN/:username', userController.findOneUserByUsername);
 
-router.update('/', userController.updateUsername);
+router.put('/', userController.updateUsername);
 
 router.delete('/deleteID/:idUser', userController.deleteUserById);
 
 router.delete('/deleteUN/:username', userController.deleteUserByUsername);
 
 router.delete ('/deleteAll',userController.deleteAllUsers);
-
-router.get ('/:created_date',userController.findAllUsersByCreatedDate);
 
 
 module.exports = router;

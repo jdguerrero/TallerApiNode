@@ -1,9 +1,11 @@
+const { DataTypes } = require("sequelize");
+
 module.exports = (sequelize, Sequelize) => {
     const Tweet = sequelize.define(
         "Tweet",
         {
             idTweet: {
-               type: Sequelize.INTEGER,
+               type: DataTypes.INTEGER,
                primaryKey: true,
                autoIncrement: true,
                unique: true,
