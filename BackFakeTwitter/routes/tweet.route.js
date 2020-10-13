@@ -2,22 +2,20 @@ var express = require('express');
 var router = express.Router();
 
 
-const postController = require("../controllers/tweet.controller")
+const tweetController = require("../controllers/tweet.controller")
 
 
 
-router.post('/', postController.createPost);
+router.post('/', tweetController.createTweet);
 
-router.get('/', postController.getAllPosts);
+router.get('/', tweetController.getAllTweets);
 
-router.get('/:idPost', postController.findOnePostById);
+router.get('/findId/:idTweet', tweetController.findTweetById);
 
-router.put('/:idPost', postController.updatePost);
+router.get('/findUN/:username', tweetController.findAllTweetsByUsername);
 
-router.delete('/:idPost', postController.deletePostByID);
+router.update('/', tweetController.updateTextTweet);
 
-router.delete ('/',postController.deleteAllPosts);
-
-
+router.delete('/deleteID/:idTweet', tweetController.deleteTweetById);
 
 module.exports = router;

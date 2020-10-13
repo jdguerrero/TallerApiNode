@@ -1,76 +1,98 @@
+const { Tweet } = require("../database/db.manager");
 const dbManager = require("../database/db.manager");
-
 
 /**
  * create a new tweet at db
  * @param {*} req 
  * @param {*} res 
  */
-function createPost (req, res) {
-    
+function createTweet(req, res) {
+
     /**
      * validar request vacio
      */
-    if(!req.body){
+    if (!req.body) {
         res.status(400).send({
             message: "Body vacio!!!"
         });
         return;
-    }else{
-    
+    } else {
+
         /**
          * creacion objeto con datos de entrada
          */
-        const newReligionObject = {
-            nombreReligion: req.body.nombreReligion,
-            descripcionReligion: req.body.descripcionReligion,
-            imagenReligion: req.body.imagenReligion
+        const newTweet = {
+            text: req.body.text,
+            date: req.body.date,
+            device: req.body.device,
+            location: req.body.location,
+            idUser: req.body.idUser
         }
-    
-        /**
-         * insert nueva religion
-         */
-        dbManager.Religion.create(newReligionObject).then(
-            data => {
-                res.send(data);
-            }
-        ).catch(
-            error => {
-                console.log(error);
+
+        
+        try {
+            //validar si el usuario existe
+            const user = await dbManager.User.findOne(
+                {
+                    where: {
+                        idUser: newTweet.idUser
+                    }
+                }
+            );
+
+            //validar llave foranea
+            if(!user){
                 res.status(400).send({
-                    message: "La religion ya existe"
+                    message: "El usuario no existe"
                 });
+                return;
+            }else{
+                /**
+                 * insert newTweet
+                 */
+                dbManager.Tweet.create(newTweet).then(
+                    data => {
+                        res.send(data);
+                    }
+                ).catch(
+                    error => {
+                        console.log(error);
+                        res.status(400).send({
+                            message: "Error al crear tweet"
+                        });
+                    }
+                );
             }
-        );
+
+        } catch (error) {
+            res.status(400).send({
+                message: "Error al crear Tweet"
+            });
+            return;
+        }
     }
 }
-    
 
 
 /**
- * return the post identificated by id on request
- * @param {*} req idPost
- * @param {*} res post information
+ * return all tweets in db
+ * @param {*} req request http
+ * @param {*} res response http
  */
-async function findOnePostById(req, res){
 
-    try{
+async function getAllTweets (req, res) {
 
-        const {idPost} = req.params;
-
-        const postFound = await dbManager.Post.findOne(
+    try {
+        const tweets = await dbManager.Tweet.findAll();
+        res.json(
             {
-                where : {
-                    idPost: idPost
-                }
+                data: tweets
             }
         );
-        res.json(postFound);
-
-    }catch(error){
+    } catch (error) {
         res.status(500).send(
             {
-                message: "Error in server, find to user"
+                message: "Error en servidor al listar tweets"
             }
         );
     }
@@ -78,57 +100,37 @@ async function findOnePostById(req, res){
 }
 
 
-
 /**
- * update a post by idPost
- * @param {*} req new data by post
- * @param {*} res post update
+ * return the tweet identificated by id on request
+ * @param {*} req id user
+ * @param {*} res user information
  */
-async function updatePost(req, res){
-
-    //check if the body is empty
-    if(!req.body){
-        response.status(400).send(
-            {
-                message: "Request body is empty!!!!"
-            }
-        );
-        return;
-    }
+async function findTweetById(req, res){
 
     try{
 
-        const {idPost} = req.params;
+        const {idTweet} = req.params;
 
-        const postFound = await dbManager.Post.findOne(
+        const tweet = await dbManager.Tweet.findOne(
             {
                 where : {
-                    idPost: idPost
+                    idTweet: idTweet
                 }
             }
         );
 
-        const updatePost = {
-            message: req.body.message,
-            published_date: req.body.published_date
+        if(!tweet){
+            res.send({
+                message: "El tweet no existe"
+            });
+        }else{
+            res.json(tweet);
         }
 
-        
-
-        postFound.message = updatePost.message;
-        postFound.published_date = updatePost.published_date;
-
-
-        await postFound.save();
-
-        
-
-        res.json(postFound);
-
     }catch(error){
         res.status(500).send(
             {
-                message: "Error in server, update to user"
+                message: "Error al encontrar tweet"
             }
         );
     }
@@ -137,81 +139,233 @@ async function updatePost(req, res){
 
 
 /**
- * delete post by idPost
- * @param {*} req idPost
- * @param {*} res information message
+ * return all tweets identificated from username
+ * @param {*} req username
+ * @param {*} res tweets
  */
-async function deletePostByID(req, res){
+async function findAllTweetsByUsername(req, res){
 
     try{
 
-        const {idPost} = req.params;
+        const {username} = req.params;
 
-        const postFound = await dbManager.Post.findOne(
+        const user = await dbManager.User.findOne(
             {
                 where : {
-                    idPost: idPost
+                    username: username
                 }
             }
         );
 
-        await postFound.destroy();
+        /**
+         * validar si el usuario existe
+         */
+        if(!user){
+            res.send({
+                message: "El usuario no existe"
+            });
+        }else{
 
-        res.send(
-            {
-                message: "User deleted"
-            }
-        );
+            /**
+             * buscar tweets
+             */
+
+            const tweets = await dbManager.Tweet.findAll(
+                {
+                    where : {
+                        idUser: user.idUser
+                    }
+                }
+            );
+            
+            if(!tweets){
+                res.send({
+                    message: "El usuario no tiene tweets"
+                });
+            }else{
+                res.json(tweets);
+            } 
+        }
 
     }catch(error){
         res.status(500).send(
             {
-                message: "Error in server, deleted to user"
+                message: "Error al encontrar tweets"
             }
         );
     }
 
 }
+
 
 
 /**
- * Delete all posts of database
- * @param {*} res informative message
+ * Elimina un tweet por su idTweet
+ * @param {*} req idTweet del tweet que se desea eliminar
+ * @param {*} res Mensaje informativo
  */
-async function deleteAllPosts(req, res){
+async function deleteTweetById(req, res){
 
     try{
-        const posts = await dbManager.Post.findAll();
 
-        posts.forEach(post => {
-            post.destroy()
-        });
+        const {idTweet} = req.params;
 
-        res.send(
+        const tweet = await dbManager.Tweet.findOne(
             {
-                message: "All posts deleted"
+                where : {
+                    idTweet: idTweet
+                }
             }
         );
 
+        /**
+         * validar si el tweet existe
+         */
+        if(!tweet){
+            res.send({
+                message: "El tweet no existe"
+            });
+        }else{
+            /**
+             * eliminar el tweet
+             */
+            await Tweet.destroy({
+                where: {
+                    idTweet: idTweet
+                }
+            });
+    
+            res.send(
+                {
+                    message:"Tweet Eliminado"
+                }
+            );
+        }
     }catch(error){
         res.status(500).send(
             {
-                message: "Error in server, delete all users"
+                message: "Error al eliminar tweet"
             }
         );
     }
 }
 
 
-exports.createPost = createPost;
 
-exports.getAllPosts = getAllPosts;
 
-exports.findOnePostById = findOnePostById;
+/**
+ * recibe un objeto JSon con la siguiente estructura
+ {
+  "idTweet": 1,
+  "text": null
+}
+ * se identifica el usuario que se desea cambiar con el idTweet
+ * txt, será el dato que podra ser actualizado o no
+ * en el ejemplo anterior no es actualizado, cuando el atributo
+ * tiene un valor diferente de null, este sera actualizado.
+ * 
+ * @param {*} req objeto json de la descripcion anterior
+ * @param {*} res objeto json con el tweet actualizado
+ */
+async function updateTextTweet (req, res){
 
-exports.updatePost = updatePost;
+    /**
+     * validar request vacio
+     */
+    if(!req.body){
+        response.status(400).send({
+            message: "Body vacio!!!"
+        });
+        return;
+    }else{
+        /**
+         * creacion objeto con datos de entrada
+         */
+        const tempTweet = {
+            idTweet: req.body.idTweet,
+            text: req.body.text,
+            date: req.body.date
+        }
 
-exports.deletePostByID = deletePostByID;
+        if(!tempTweet.idTweet){
+            res.send(
+                {
+                    message:"Debe ingresar el id del tweet que desea actualizar"
+                }
+            );
+        }else{
 
-exports.deleteAllPosts = deleteAllPosts;
+            /**
+             * validar si el tweet existe
+             */
+ 
+            const tweet = await dbManager.Tweet.findOne(
+                {
+                    where: {
+                        idTweet: tempTweet.idTweet
+                    }
+                }
+            );
 
+
+            if(!tweet){
+                res.send(
+                    {
+                        message:"El tweet que desea modificar no existe"
+                    }
+                );
+            }else{
+
+                /**
+                * update text 
+                */
+
+                if(!tempTweet.text){
+                    console.log("no actualizo text");
+                }else{
+                    await Tweet.update({ text: tempTweet.text, date: tempTweet.date }, {
+                        where: {
+                            idTweet: tempTweet.idTweet
+                        }
+                    });
+                }
+
+                /**
+                 * return usuario actualizado
+                 */
+                try {
+
+                    const upTweet = await dbManager.Tweet.findOne(
+                        {
+                            where: {
+                                idTweet: tempTweet.idTweet
+                            }
+                        }
+                    );
+                    res.json(upTweet);
+                } catch (error) {
+                    res.status(500).send(
+                        {
+                            message: "Error en servidor al actualizar tweet"
+                        }
+                    );
+                }
+
+            }
+        }
+    }
+}
+
+
+
+exports.createTweet = createTweet;
+
+exports.getAllTweets = getAllTweets;
+
+exports.findTweetById = findTweetById;
+
+exports.findAllTweetsByUsername = findAllTweetsByUsername;
+
+exports.deleteTweetById = deleteTweetById;
+
+exports.updateTextTweet = updateTextTweet;
