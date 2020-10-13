@@ -6,24 +6,30 @@ const sequelizeConnection = require("./db.connection");
 
 //import models
 const UserModel = require("../models/user.model");
-const PostModel = require("../models/post.model");
+const TweetModel = require("../models/tweet.model");
 
 
 //Initialize Models
 const User = UserModel(sequelizeConnection, Sequelize);
-const Post = PostModel(sequelizeConnection, Sequelize);
+const Tweet = TweetModel(sequelizeConnection, Sequelize);
 
 
 //Create relations among models
+User.hasMany(Tweet, { 
+    foreignKey: 'idUser',
+    onDelete : 'CASCADE',
+});
 
-User.hasMany(Post, { foreingKey: 'idPost', sourceKey: 'idUser'});
 
-Post.belongsTo (User, { foreingKey: 'idUser', sourceKey: 'idPost'})
+Tweet.belongsTo (User, {
+    foreignKey:'idUser',
+    onDelete : 'CASCADE',
+});
 
 
 const db = {
     User,
-    Post,
+    Tweet,
     sequelizeConnection
 }
 
